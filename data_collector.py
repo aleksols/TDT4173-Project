@@ -4,6 +4,7 @@ import io
 import config
 from tqdm import tqdm
 from os import listdir, mkdir
+import ta
 
 
 def collect_data():
@@ -14,8 +15,7 @@ def collect_data():
             "period1": config.period_start,
             "period2": config.period_end,
             "interval": interval,
-            "events": "history",
-            "includeAdjustedClose": "false"
+            "events": "history"
         }
 
         r = requests.get(
@@ -25,7 +25,7 @@ def collect_data():
 
         f = io.BytesIO(r.content)  # Turn response into csv file
         try:
-            d = pd.read_csv(f)
+            d = pd.read_csv(f).drop("Adj Close", axis=1)  # Turn csv file into dataframe and remove unused column
             data.append(d)
         except IOError:
             print("IO error")
@@ -35,11 +35,17 @@ def collect_data():
 
 def add_indicators(data):
     """
-    Add the indicators RSI and MACD to the given dataframe object
+    Add the indicators RSI and MACD and return a new DataFrame object
     :param data: pandas dataframe
-    :return: None
+    :return: pandas.DataFrame
     """
-    # TODO implement
+    macd = ta.trend.MACD(data.Close)
+    rsi = ta.momentum.RSIIndicator(data.Close)
+    data["macd"] = macd.macd()
+    data["macd_signal"] = macd.macd_signal()
+    data["macd_histogram"] = macd.macd_diff()
+    data["rsi"] = rsi.rsi()
+    return ta.utils.dropna(data)
 
 
 def save_data(data: pd.DataFrame, file_name):
@@ -52,14 +58,14 @@ def save_data(data: pd.DataFrame, file_name):
 
     if config.data_folder not in listdir("."):
         mkdir(config.data_folder)
-    data.to_csv(f"{config.data_folder}/{file_name}")
+    data.to_pickle(f"{config.data_folder}/{file_name}")
 
 
 if __name__ == '__main__':
     daily, weekly, monthly = collect_data()
-    add_indicators(daily)
-    add_indicators(weekly)
-    add_indicators(monthly)
-    save_data(daily, "daily_data.csv")
-    save_data(weekly, "weekly_data.csv")
-    save_data(monthly, "monthly_data.csv")
+    daily = add_indicators(daily)
+    weekly = add_indicators(weekly)
+    monthly = add_indicators(monthly)
+    save_data(daily, "daily_data.pkl")
+    save_data(weekly, "weekly_data.pkl")
+    save_data(monthly, "monthly_data.pkl")
