@@ -8,6 +8,11 @@ import ta
 
 
 def collect_data():
+    """
+    Get the daily, weekly and monthly time series data from Yahoo finance:
+    https://finance.yahoo.com/quote/%5EGSPC/history?p=%5EGSPC
+    :return: tuple with daily, weekly and monthly data
+    """
     data = []
 
     for interval in tqdm(["1d", "1wk", "1mo"], desc="Downloading data"):
@@ -25,7 +30,15 @@ def collect_data():
 
         f = io.BytesIO(r.content)  # Turn response into csv file
         try:
-            d = pd.read_csv(f).drop("Adj Close", axis=1)  # Turn csv file into dataframe and remove unused column
+            d = pd.read_csv(f, parse_dates=[0], index_col=0)  # Turn csv file into dataframe
+
+            # Remove unused columns
+            d = d.drop("Adj Close", axis=1) \
+                .drop("Open", axis=1) \
+                .drop("High", axis=1) \
+                .drop("Low", axis=1) \
+                .drop("Volume", axis=1)
+
             data.append(d)
         except IOError:
             print("IO error")
@@ -33,11 +46,11 @@ def collect_data():
     return data[0], data[1], data[2]
 
 
-def add_indicators(data):
+def add_indicators(data: pd.DataFrame):
     """
     Add the indicators RSI and MACD and return a new DataFrame object
-    :param data: pandas dataframe
-    :return: pandas.DataFrame
+    :param data: dataframe containing the time series data
+    :return: dataframe with technical indicators added
     """
     macd = ta.trend.MACD(data.Close)
     rsi = ta.momentum.RSIIndicator(data.Close)
@@ -48,7 +61,7 @@ def add_indicators(data):
     return ta.utils.dropna(data)
 
 
-def save_data(data: pd.DataFrame, file_name):
+def save_data(data: pd.DataFrame, file_name: str):
     """
     Save the dataframe as a csv file
     :param data: pandas dataframe to be stored as a csv
