@@ -16,4 +16,8 @@ data_folder = "timeseries_data"
 
 # Parameters for LSTM
 # -------------------------------------------------------------------------
+timeseries_interval = "daily"
+train_partition = 0.7
+val_partition = 0.2
+test_partition = 0.1
 # -------------------------------------------------------------------------
