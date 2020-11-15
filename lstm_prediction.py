@@ -13,6 +13,7 @@ data["Change"] = ((data["Close"] - data["Close"].shift(1)) / data["Close"]).fill
 data["macd"] /= data["Close"]
 data["macd_signal"] /= data["Close"]
 data["macd_histogram"] /= data["Close"]
+data["rsi"] /= 100
 
 normalized_data = data[data.columns[1:]]
 
@@ -22,3 +23,5 @@ train_data = data[: int(n * config.train_partition)]
 val_data = data[int(n * config.train_partition): int(n * (config.train_partition + config.val_partition))]
 test_data = data[int(n * (1 - config.test_partition)):]
 
+normalized_data.plot(subplots=True)
+plt.show()
