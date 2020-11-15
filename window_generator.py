@@ -76,4 +76,4 @@ if __name__ == '__main__':
     print(f'labels shape: {example_labels.shape}')
 
     test = w.make_dataset(train_data)
-    print(test.element_spec)
+    print(len(test))
