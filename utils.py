@@ -24,23 +24,19 @@ def compile_and_fit(model, train_x, train_y, val_x, val_y, patience):
     return history
 
 
-def normalize_data(data):
-    data["Change"] = ((data["Close"] - data["Close"].shift(1)) / data["Close"]).fillna(0)
-    data["macd"] /= data["Close"]
-    data["macd_signal"] /= data["Close"]
-    data["macd_histogram"] /= data["Close"]
-    data["rsi"] /= 100
-
-    normalized_data = data[data.columns[1:]]
-    return normalized_data
+def standardize_data(data):
+    d = pd.DataFrame(data[data.columns])
+    for column in d.columns:
+        d[column + "_standardized"] = (d[column] - d[column].mean()) / d[column].std()
+    return d, d["Close"].mean(), d["Close"].std()
 
 
-def label_data(data, observation_window, columns=None):
-    if columns is not None:
-        d = pd.DataFrame(data[columns])
+def label_data(data, observation_window, input_columns=None, label_column=None):
+    if input_columns is not None:
+        d = pd.DataFrame(data[input_columns])
     else:
         d = pd.DataFrame(data)
-    d["y"] = data["Change"].shift(-1)
+    d["y"] = d[label_column].shift(-1)
     values = d.to_numpy()
     x = []
     y = []
@@ -52,18 +48,21 @@ def label_data(data, observation_window, columns=None):
     y = np.stack(y)
     return x, y
 
-class Benchmark(tf.keras.Model):
-    def call(self, x, **kwargs):
-        return np.zeros(x.shape[0])
 
 if __name__ == '__main__':
-    import pandas as pd
+    # import pandas as pd
+    import matplotlib.pyplot as plt
 
     D = pd.read_pickle("timeseries_data/daily_data.pkl")
-    norm = normalize_data(D)
-
-    print(D)
-    print(norm)
-    print(norm["Change"].std())
-    # X, Y = label_data(norm, config.observation_window, ["Change"])
-    # print(X)
+    standardized = standardize_data(D)
+    model = tf.keras.models.Sequential()
+    model.add(tf.keras.layers.LSTM(5, return_sequences=False))
+    model.add(tf.keras.layers.Dense(1))
+    model.compile(loss="mse", optimizer="adam")
+    a = np.reshape(np.arange(50000) / 10000, (50000, 1, 1))
+    print(a.shape)
+    model.fit(a, a.squeeze(), batch_size=32)
+    pred = model(a)
+    plt.plot(a.squeeze(), pred.numpy().squeeze())
+    plt.show()
+    print(model.layers[-1].weights)

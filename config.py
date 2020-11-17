@@ -20,11 +20,12 @@ timeseries_interval = "daily"
 train_partition = 0.85
 val_partition = 0.12
 test_partition = 0.03
-observation_window = 5
-patience = 5
-lstm_units = 10
-epochs = 500
+observation_window = 1
+patience = 1
+lstm_units = 5
+epochs = 25
 batch_size = 32
-input_columns = None  # A list of input features or None to use all features as input
+input_columns = ["Close_standardized"]#, "macd_standardized", "macd_histogram_standardized", "macd_signal_standardized", "rsi_standardized"]  # A list of input features or None to use all features as input
+label_column = "Close_standardized"
 statistics_root_directory = "C:/Users/Aleksander/Google Drive/Skole/4. klasse/Høst/Maskinlæring/project"
 # -------------------------------------------------------------------------
