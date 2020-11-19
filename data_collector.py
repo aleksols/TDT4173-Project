@@ -6,7 +6,6 @@ from tqdm import tqdm
 from os import listdir, mkdir
 import ta
 
-
 def collect_data():
     """
     Get the daily, weekly and monthly time series data from Yahoo finance:
@@ -63,7 +62,7 @@ def add_indicators(data: pd.DataFrame):
 
 def save_data(data: pd.DataFrame, file_name: str):
     """
-    Save the dataframe as a csv file
+    Save the dataframe as a pickled file
     :param data: pandas dataframe to be stored as a csv
     :param file_name: name for file to be saved
     :return: None
