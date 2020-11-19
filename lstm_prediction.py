@@ -3,7 +3,6 @@ import pandas as pd
 import config
 import matplotlib.pyplot as plt
 import utils
-import numpy as np
 import time
 from os import mkdir
 
