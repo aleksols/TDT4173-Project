@@ -17,15 +17,29 @@ data_folder = "timeseries_data"
 # Parameters for LSTM
 # -------------------------------------------------------------------------
 timeseries_interval = "daily"
-train_partition = 0.85
-val_partition = 0.12
-test_partition = 0.03
+train_partition = 0.7
+val_partition = 0.2
+test_partition = 0.1
 observation_window = 1
 patience = 1
-lstm_units = 5
+lstm_units = 30
 epochs = 25
-batch_size = 32
-input_columns = ["Close_standardized"]#, "macd_standardized", "macd_histogram_standardized", "macd_signal_standardized", "rsi_standardized"]  # A list of input features or None to use all features as input
-label_column = "Close_standardized"
+batch_size = 64
+
+# A list of input features for the model to predict or None to use all features as input
+input_columns = [
+    "Close_standardized",
+    "macd_standardized",
+    "macd_histogram_standardized",
+    "macd_signal_standardized",
+    "rsi_standardized"
+]
+
+# NB: Not to be changed. This was meant to be a changeable variable, but the code in lstm_prediction.py does not
+# support this as of now. Predicting the close price is also what this project is mainly about
+label_column = "Close"
+
+# The variable below is the path to the root directory where the folder containing statistic information will be saved.
+# This has to be changed
 statistics_root_directory = "C:/Users/Aleksander/Google Drive/Skole/4. klasse/Høst/Maskinlæring/project"
 # -------------------------------------------------------------------------
