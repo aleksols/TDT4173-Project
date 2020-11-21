@@ -41,6 +41,8 @@ test_x, test_y = utils.label_data(
 
 # Define the model
 model = tf.keras.models.Sequential()
+model.add(tf.keras.layers.LSTM(config.lstm_units, return_sequences=True))
+model.add(tf.keras.layers.LSTM(config.lstm_units, return_sequences=True))
 model.add(tf.keras.layers.LSTM(config.lstm_units, return_sequences=False))
 model.add(tf.keras.layers.Dense(1))
 
@@ -92,9 +94,9 @@ plt.show()
 
 # Calculate mean absolute errors and percentage wise absolute errors to use for comparing performance
 absolute_error_predicted = (result["Actual"] - result["Predictions"]).abs()
-percentage_error_predicted = (1 - result["Predictions"]/result["Actual"]).abs()
+percentage_error_predicted = (1 - result["Predictions"]/result["Actual"]).abs() * 100
 absolute_error_benchmark = (result["Actual"] - result["Benchmark"]).abs()
-percentage_error_benchmark = (1 - result["Benchmark"]/result["Actual"]).abs()
+percentage_error_benchmark = (1 - result["Benchmark"]/result["Actual"]).abs() * 100
 mae_predicted = absolute_error_predicted.mean()
 avg_percentage_predicted = percentage_error_predicted.mean()
 mae_benchmark = absolute_error_benchmark.mean()
@@ -127,7 +129,9 @@ with open(f"{config.statistics_root_directory}/experiment_{time_stamp}/stats_{ti
     file.write("\nStats:\n")
     file.write(f"Mean absolute error for predicted values: {mae_predicted}\n")
     file.write(f"Absolute error std for predicted values: {absolute_error_predicted.std()}\n")
+    file.write(f"Mean absolute percentage error for predicted values: {percentage_error_predicted}\n")
+    file.write(f"Absolute percentage error std for predicted values: {percentage_error_predicted.std()}\n")
     file.write(f"Mean absolute error for naive benchmark values: {mae_benchmark}\n")
     file.write(f"Absolute error std for naive benchmark values: {absolute_error_benchmark.std()}\n")
-
-print(model.evaluate(test_x, test_y))
+    file.write(f"Mean absolute percentage error for benchmark values: {percentage_error_predicted}\n")
+    file.write(f"Absolute percentage error std for benchmark values: {percentage_error_predicted.std()}\n")

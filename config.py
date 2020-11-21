@@ -17,13 +17,13 @@ data_folder = "timeseries_data"
 # Parameters for LSTM
 # -------------------------------------------------------------------------
 timeseries_interval = "daily"
-train_partition = 0.7
-val_partition = 0.2
-test_partition = 0.1
-observation_window = 1
-patience = 1
-lstm_units = 30
-epochs = 25
+train_partition = 0.85
+val_partition = 0.12
+test_partition = 0.03
+observation_window = 1  # The number of previous time steps to make up one input sample
+patience = 1  # Number of epochs without improvement before early stopping kicks in
+lstm_units = 20
+epochs = 250
 batch_size = 64
 
 # A list of input features for the model to predict or None to use all features as input
@@ -40,6 +40,6 @@ input_columns = [
 label_column = "Close"
 
 # The variable below is the path to the root directory where the folder containing statistic information will be saved.
-# This has to be changed
+# This has to be changed when run on a different host
 statistics_root_directory = "C:/Users/Aleksander/Google Drive/Skole/4. klasse/Høst/Maskinlæring/project"
 # -------------------------------------------------------------------------
