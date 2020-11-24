@@ -2,6 +2,11 @@
 This is the repository for the project in TDT4173 Machine Learning by Time Series Group 16.
 Please read the instructions below carefully. 
 
+### Install dependencies
+Run the following command from the project root file to download the requred python-modules.
+
+<code>pip install -r requirements.txt</code>
+
 ### Downloading the datasets
 Run data_collector.py with the following command to download the time series data.
 
