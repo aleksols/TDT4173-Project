@@ -111,6 +111,7 @@ print("Absolute error std for benchmark:", absolute_error_benchmark.std())
 print("Mean average percentage wise error for benchmark values:", avg_percentage_benchmark)
 print("Mean average percentage wise error std for benchmark values:", percentage_error_benchmark.std())
 
+# Save config parameters and results to file
 with open(f"{config.statistics_root_directory}/experiment_{time_stamp}/stats_{time_stamp}.txt", "w") as file:
     file.write("Config:\n")
     s = "timeseries_interval = " + str(config.timeseries_interval) + "\n"

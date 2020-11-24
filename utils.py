@@ -1,7 +1,8 @@
-import tensorflow as tf
-import config
 import numpy as np
 import pandas as pd
+import tensorflow as tf
+
+import config
 
 
 def compile_and_fit(model, train_x, train_y, val_x, val_y, patience):
