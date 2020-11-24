@@ -35,6 +35,7 @@ q = 2  # The parameter for the MA part
 
 # Parameters for LSTM
 # -------------------------------------------------------------------------
+# Partition sizes for training, validation and test datasets
 train_partition = 0.85
 val_partition = 0.12
 test_partition = 0.03
