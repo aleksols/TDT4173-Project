@@ -1,10 +1,13 @@
-import requests
-import pandas as pd
 import io
-import config
-from tqdm import tqdm
 from os import listdir, mkdir
+
+import pandas as pd
+import requests
 import ta
+from tqdm import tqdm
+
+import config
+
 
 def collect_data():
     """

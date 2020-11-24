@@ -1,5 +1,6 @@
-import utils
 import pandas as pd
+
+import utils
 
 df = pd.read_pickle("timeseries_data/daily_data.pkl")
 

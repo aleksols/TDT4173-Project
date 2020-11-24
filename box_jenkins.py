@@ -1,13 +1,14 @@
+import matplotlib.pyplot as plt
+import pandas as pd
 from statsmodels.graphics.tsaplots import plot_acf
 from statsmodels.graphics.tsaplots import plot_pacf
 from statsmodels.tsa.arima.model import ARIMA
-import pandas as pd
+
 import config
-import matplotlib.pyplot as plt
 
 data = pd.read_pickle(f"{config.data_folder}/{config.timeseries_interval}_data.pkl")
 
-data = data["Close"]
+data = data[["Close"]]
 d = data.diff().dropna()  # Take the first difference to make the time series stationary
 
 # Plot ACF and PACF
@@ -24,7 +25,7 @@ aicc_values = {}
 bic_values = {}
 for p in range(5):
     for q in range(5):
-        model = ARIMA(d.values, order=(p, 1, q))
+        model = ARIMA(data.values.squeeze(), order=(p, 1, q))
         model_fit = model.fit()
         aic = model_fit.aic
         aicc = model_fit.aicc
@@ -34,6 +35,6 @@ for p in range(5):
         bic_values[(p, q)] = bic
         print("p, q,", p, q, "AIC:", aic, "AICC:", aicc, "BIC:", bic)
 
-print(sorted(list(aic_values.items()), key=lambda x: x[1]))
-print(sorted(list(aicc_values.items()), key=lambda x: x[1]))
-print(sorted(list(bic_values.items()), key=lambda x: x[1]))
+print("Sorted after aic", sorted(list(aic_values.items()), key=lambda x: x[1]))
+print("Sorted after aicc", sorted(list(aicc_values.items()), key=lambda x: x[1]))
+print("Sorted after bic", sorted(list(bic_values.items()), key=lambda x: x[1]))

@@ -9,18 +9,25 @@ period_end = 1604102400  # This is Oct 31 2020. Should not be changed for reprod
 data_folder = "timeseries_data"
 # -------------------------------------------------------------------------
 
+# Time series to use
+timeseries_interval = "daily"
+
 
 # Parameters for ARIMA
 # -------------------------------------------------------------------------
-timeseries_interval = "daily"
-train_partition = 0.7
-val_partition = 0.2
-test_partition = 0.1
+# train_part + test_part can not be greater that 1
+train_part = 0.2  # Partition of data to be used for initial training of the arima
+test_part = 0.03  # Partition of data to be used for testing the arima
+# train_part + test_part does not have to be 1. For example if train_part is 0.5 and test part is 0.1 we will use
+# the last 10% of data for testing and a partition of size equal to 50% of the data as training data. That is, the last
+# 60% of the data will be used in total.
+p = 3  # The parameter for the AR part
+i = 1  # The parameter for the integration part
+q = 2  # The parameter for the MA part
 # -------------------------------------------------------------------------
 
 # Parameters for LSTM
 # -------------------------------------------------------------------------
-timeseries_interval = "daily"
 train_partition = 0.85
 val_partition = 0.12
 test_partition = 0.03

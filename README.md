@@ -21,11 +21,17 @@ For LSTM, in addition to tweak the sizes of the training, valuation and test dat
 tweak hyperparameters for the LSTM.
 
 ##### IMPORTANT
-Before running lstm_prediction.py the variable statistics_root_directory has to be changed to an existing directory on 
+Before running lstm_prediction.py and arima_prediction.py the variable statistics_root_directory has to be changed to an existing directory on 
 the host machine where the module can create subdirectories for storing log files. If this is not done lstm_predictions.py
-will crash on line 61. 
+will crash on line 61 and arima_prediction.py will crash on line 50.
 
 ### Run forecast analysis of ARIMA
+Run box_jenkins.py to plot the acf and pacf of the dataset. Before the acf and pacf is plotted the dataset is made stationary by taking the first difference.
+The AIC, AICC, and BIC for different combinations of the p and q parameters will be printed. The values are sorted from
+best to worst configurations. 
+
+<code>python box_jenkins.py</code>
+ 
 Run arima_prediction.py to fit the model to a training dataset and evaluate it on a test dataset with the mean absolute error and mean absolute percentage error.
 
 <code>python arima_prediction.py</code>

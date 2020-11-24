@@ -1,52 +1,70 @@
-import pandas as pd
-import config
+import time
+from os import mkdir
+
 import matplotlib.pyplot as plt
-from statsmodels.tsa.arima.model import ARIMA
-from pandas.plotting import autocorrelation_plot
+import numpy as np
+import pandas as pd
 from sklearn.metrics import mean_squared_error
-from statsmodels.graphics.tsaplots import plot_acf
-from statsmodels.graphics.tsaplots import plot_pacf
+from statsmodels.tsa.arima.model import ARIMA
+from tqdm import tqdm
 
-
-
-
-pd.options.display.width = 0
+import config
 
 data = pd.read_pickle(f"{config.data_folder}/{config.timeseries_interval}_data.pkl")
 
-print(data.head())
-#data.plot()
-#plt.show()
+data = data[["Close"]]  # We are only interested in the closing prices
 
-
-data = data["Close"]
-
+# Split data into training and test datasets
 n = len(data)
-print(n)
+X = data.values.squeeze()
+train_size = int(config.train_part * n)
+test_size = int(config.test_part * n)
+train, test = X[-(train_size + test_size):-test_size], X[-test_size:]
 
-use_data = data[int(n*0.9):int(n*0.96)]
-
-X = use_data.values
-size = int(len(X) * 0.8)
-train, test = X[0:size], X[size:len(X)]
-plot_acf(test)
-plt.show()
-plot_pacf(test)
-plt.show()
+# Train the model
 history = [x for x in train]
 predictions = list()
-for t in range(len(test)):
-    model = ARIMA(history, order=(2,0,0))
+for t in tqdm(range(len(test))):
+    model = ARIMA(history, order=(config.p, config.i, config.q))
     model_fit = model.fit()
     output = model_fit.forecast()
     yhat = output[0]
     predictions.append(yhat)
     obs = test[t]
     history.append(obs)
-    print('predicted=%f, expected=%f' % (yhat, obs))
 error = mean_squared_error(test, predictions)
 print('Test MSE: %.3f' % error)
-# plot
-plt.plot(test)
-plt.plot(predictions, color='red')
+
+# plot predicted vs actual
+plt.plot(test, label="Actual")
+plt.plot(predictions, color='red', label="Predicted")
+plt.legend()
 plt.show()
+
+# Calculate and print the metrics
+absolute_error = np.absolute(np.array(predictions) - np.array(test))
+abs_percentage_error = (absolute_error / np.array(test)) * 100
+print("Mean absolute error:", absolute_error.mean())
+print("Std of absolute error:", absolute_error.std())
+print("Mean percentage absolute error:", abs_percentage_error.mean())
+print("Std of absolute percentage error:", abs_percentage_error.std())
+
+time_stamp = time.time()
+mkdir(f"{config.statistics_root_directory}/ARIMA_experiment_{time_stamp}")
+
+# Save config parameters and results to file
+with open(f"{config.statistics_root_directory}/ARIMA_experiment_{time_stamp}/stats_{time_stamp}.txt", "w") as file:
+    file.write("Config:\n")
+    s = "timeseries_interval = " + str(config.timeseries_interval) + "\n"
+    s += "train_part = " + str(config.train_part) + "\n"
+    s += "test_part = " + str(config.test_part) + "\n"
+    s += "p = " + str(config.p) + "\n"
+    s += "i = " + str(config.i) + "\n"
+    s += "q = " + str(config.q) + "\n"
+
+    file.write(s)
+    file.write("\nStats:\n")
+    file.write(f"Mean absolute error for predicted values: {absolute_error.mean()}\n")
+    file.write(f"Absolute error std for predicted values: {absolute_error.std()}\n")
+    file.write(f"Mean absolute percentage error for predicted values: {abs_percentage_error.mean()}\n")
+    file.write(f"Absolute percentage error std for predicted values: {abs_percentage_error.std()}\n")
