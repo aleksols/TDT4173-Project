@@ -25,7 +25,7 @@ train, test = X[-(train_size + test_size):-test_size], X[-test_size:]
 history = [x for x in train]
 predictions = list()
 for t in tqdm(range(len(test))):
-    model = ARIMA(history, order=(config.p, config.i, config.q))
+    model = ARIMA(history, order=(config.p, config.d, config.q))
     model_fit = model.fit()
     output = model_fit.forecast()
     yhat = output[0]
@@ -59,7 +59,7 @@ with open(f"{config.statistics_root_directory}/ARIMA_experiment_{time_stamp}/sta
     s += "train_part = " + str(config.train_part) + "\n"
     s += "test_part = " + str(config.test_part) + "\n"
     s += "p = " + str(config.p) + "\n"
-    s += "i = " + str(config.i) + "\n"
+    s += "i = " + str(config.d) + "\n"
     s += "q = " + str(config.q) + "\n"
 
     file.write(s)
