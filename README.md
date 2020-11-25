@@ -21,7 +21,7 @@ Run statistic_values.py to print relevant information about the the dataset such
 <code>python statistic_values.py</code>
 
 ### Configurations for ARIMA and LSTM
-The file config.py can be used to tweak parameters such as the size of the training dataset and evaluation dataset for ARIMA, as well as the values for p, i and q.
+The file config.py can be used to tweak parameters such as the size of the training dataset and evaluation dataset for ARIMA, as well as the values for p, d and q.
 For LSTM, in addition to tweak the sizes of the training, valuation and test datasets the configuration can be used to 
 tweak hyperparameters for the LSTM.
 
