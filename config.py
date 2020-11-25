@@ -28,7 +28,7 @@ test_part = 0.03  # Partition of data to be used for testing the arima
 # the last 10% of data for testing and a partition of size equal to 50% of the data as training data. That is, the last
 # 60% of the data will be used in total.
 p = 3  # The parameter for the AR part
-i = 1  # The parameter for the integration part
+d = 1  # The parameter for the integration part
 q = 2  # The parameter for the MA part
 # -------------------------------------------------------------------------
 
